@@ -20,5 +20,10 @@ python_scientific:
             - python-scipy
             - python-matplotlib
             - mayavi2
+
+wheel:
+    pip.installed:
+        - require:
+            - pkg: python_developer
 {% endif %}
 # TODO: add obspy, then break out to separate module
