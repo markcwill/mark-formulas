@@ -4,7 +4,7 @@
 
 # Add PPA and install zfs
 {% if grains['os'] == 'Ubuntu' %}
-zfs-install:
+zfs:
     pkgrepo.managed:
         - ppa: zfs-native/stable
     pkg.installed:
@@ -16,4 +16,10 @@ zfs-install:
     file.replace:
         - pattern: "ZFS_MOUNT='no'"
         - repl: "ZFS_MOUNT='yes'"
+
+{% elif grains['os'] == 'ScientificLinux' %}
+zfs:
+    pkg.installed:
+        - enablerepo: sl-addons
+
 {% endif %}
