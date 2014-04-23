@@ -19,5 +19,6 @@ python_scientific:
         - pkgs:
             - python-scipy
             - python-matplotlib
+            - mayavi2
 {% endif %}
 # TODO: add obspy, then break out to separate module
