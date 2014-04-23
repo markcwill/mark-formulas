@@ -12,6 +12,6 @@ compilers:
             - build-essential
             - gfortran
             - scala
-
+            - golang-go
 {% endif %}
 
