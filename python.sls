@@ -25,5 +25,11 @@ wheel:
     pip.installed:
         - require:
             - pkg: python_developer
+
+geojson:
+    pip.installed:
+        - require:
+            - pkg: python_developer
+
 {% endif %}
 # TODO: add obspy, then break out to separate module
