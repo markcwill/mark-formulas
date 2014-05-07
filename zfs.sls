@@ -18,8 +18,14 @@ zfs:
         - repl: "ZFS_MOUNT='yes'"
 
 {% elif grains['os'] == 'ScientificLinux' %}
+
 zfs:
     pkg.installed:
         - enablerepo: sl-addons
+    
+    service:
+        - enabled
+        - require:
+            - pkg: zfs
 
 {% endif %}
