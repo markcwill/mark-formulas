@@ -17,6 +17,36 @@ obspy:
         - name: python-obspy
         - refresh: True
 
-{% endif %}
+{% elif grains['os_family'] == 'RedHat' %}
 #
 # otherwise, need the pre-requisites, maybe wheels for numpy, scipy, etc
+#
+
+# Method 1: pip -> Requires fedora/Scientific w/epel
+obspy_pkg_dependencies:
+    pkg.installed:
+        - pkgs:
+            - python-pip
+            - python-devel      
+            - python-setuptools
+            - numpy
+            - scipy
+            - python-matplotlib
+            - python-lxml
+            - python-suds
+            - python-sqlalchemy
+            - gcc-gfortran
+
+obspy_pip_distribute:
+    pip.installed:
+        - name: distribute
+        - require:
+            - pkg: obspy_pkg_dependencies
+
+obspy:
+    pip.installed:
+        - require:
+            - pkg: obspy_pkg_dependencies
+            - pip: obspy_pip_distribute
+        
+{% endif %}
