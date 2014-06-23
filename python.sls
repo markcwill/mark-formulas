@@ -7,6 +7,15 @@
 python-pip:
     pkg.installed
 
+python-gevent:
+    pkg.installed
+
+python-requests:
+    pkg.installed
+
+pypy:
+    pkg.installed
+
 {% if grains['os'] == 'Ubuntu' %}
 # Notes: python-zmq, python-jinja2, python-yaml installed by salt.
 python_developer:
@@ -54,3 +63,8 @@ geojson:
         - require:
             - pkg: python-pip
 
+Flask:
+    pip.installed:
+        - require:
+            - pkg: python-pip
+    

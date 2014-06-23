@@ -1,8 +1,16 @@
 #
-# Salt - Obspy install
+# Salt - ObsPy install
+# Only supported obspy install methods are used (deb + pip)
+#
+# Use the native package management system for dependencies
+# whenever possible. Use pip for everything else.
 #
 
-# only works for Ubuntu/Debian package repo right now...
+#######################################################################
+# REPOSITORY INSTALL
+#######################################################################
+
+#- Debian/Ubuntu
 #
 {% if grains['os_family'] == 'Debian' %}
 
@@ -17,12 +25,20 @@ obspy:
         - name: python-obspy
         - refresh: True
 
-{% elif grains['os_family'] == 'RedHat' %}
+#######################################################################
+# PIP INSTALL
+#######################################################################
+{% else %}
+
+#--- 1. Get dependencies from package system -------------------------#
 #
-# otherwise, need the pre-requisites, maybe wheels for numpy, scipy, etc
+# TODO: break distro variables out to a map.jinja file
 #
 
-# Method 1: pip -> Requires fedora/Scientific w/epel
+#- RHEL/CentOS
+#
+{% if grains['os_family'] == 'RedHat' %}
+# 6.x, requires EPEL (resolved by salt-bootstrap)
 obspy_pkg_dependencies:
     pkg.installed:
         - pkgs:
@@ -36,7 +52,44 @@ obspy_pkg_dependencies:
             - python-suds
             - python-sqlalchemy
             - gcc-gfortran
+            - gcc
 
+#- Arch Linux
+#
+{% elif grains['os_family'] == 'Arch' %}
+obspy_pkg_dependencies:
+    pkg.installed:
+        - pkgs:
+            - python-pip
+            - python-setuptools
+            - python-numpy
+            - python-scipy
+            - python-matplotlib
+            - python-lxml
+            - python-sqlalchemy
+            - gcc-gfortran
+            - gcc
+    # PIP install suds-jurko
+    pip.installed:
+        - name: suds-jurko
+        - require:
+            - pkg: obspy_pkg_dependencies
+
+#- Default
+#
+{% else %}
+# Cry, whine, complain (actually need to exit gracefully??)
+
+{% endif %}
+
+
+#--- 2. Install obspy w/ pip  -----------------------------------------#
+obspy_pip_future:
+    pip.installed:
+        - name: future
+        - require:
+            - pkg: obspy_pkg_dependencies
+            
 obspy_pip_distribute:
     pip.installed:
         - name: distribute
@@ -48,5 +101,6 @@ obspy:
         - require:
             - pkg: obspy_pkg_dependencies
             - pip: obspy_pip_distribute
-        
+            - pip: obspy_pip_future
+
 {% endif %}
